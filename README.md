@@ -17,7 +17,7 @@ Aplicatie pentru crearea si editarea colaborativa a documentelor text.
 - **Export si distribuire a documentelor**  
   Generarea documentelor in format unic si distribuirea acestora prin email.
 
-## 🧠 Tehnologii
+## Tehnologii
 - **Frontend:** React  
 - **Backend:** Django (Python)  
 - **Baza de date:** PostgreSQL
