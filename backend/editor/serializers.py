@@ -8,13 +8,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email"]
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharFiels(write_only=True)
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = User
         fields = ["username", "email", "password"]
 
     def create(self, validated_data):
-        user = User.object.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
         return user
     
 class UserColorSerializer(serializers.ModelSerializer):
@@ -26,14 +26,17 @@ class StyleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Style
         fields = "__all__"
+        read_only_fields = ['user']
 
 class MediaFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = MediaFile
         fields = "__all__"
+        read_only_fields = ['user', 'uploaded_at']
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = "__all__"
+        read_only_fields = ['user', 'created_at', 'updated_at']
 

@@ -16,6 +16,7 @@ from .serializers import (
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -35,6 +36,7 @@ class UserColorViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 class StyleViewSet(viewsets.ModelViewSet):
+    queryset = Style.objects.all()
     serializer_class = StyleSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -44,6 +46,7 @@ class StyleViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class MediaFileViewSet(viewsets.ModelViewSet):
+    queryset = MediaFile.objects.all()
     serializer_class = MediaFileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -54,6 +57,7 @@ class MediaFileViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 class DocumentViewSet(viewsets.ModelViewSet):
+    queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
