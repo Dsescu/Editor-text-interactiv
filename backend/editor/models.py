@@ -32,7 +32,11 @@ class MediaFile(models.Model):
 class Document(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
     title = models.CharField(max_length=200)
+<<<<<<< HEAD
     content = models.TextField(blank = True)
+=======
+    content = models.TextField(blank=True)
+>>>>>>> cbf4b162edf70522a3fb37113a17889240611288
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
