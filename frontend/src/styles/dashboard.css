@@ -1,0 +1,78 @@
+.dash-container {
+  max-width: 900px; 
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/*butonul pentru document nou*/
+.new-doc-btn {
+  padding: 12px 20px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+.new-doc-btn:hover {
+  background: #3a7bc1;
+}
+
+/*grid cu documente*/
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px; /*spatiu intre ele*/
+}
+
+/*card pentru fiecare document*/
+.doc-card {
+  position: relative;
+  padding: 20px;
+  border-radius: 12px;
+  background: #f6f7fb;
+  cursor: pointer;
+  transition: 0.2s;
+  text-align: left;
+}
+.doc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/*titlu document*/
+.doc-info h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+/*descriere document*/
+.doc-info p {
+  color: #666;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/*buton delete în colt*/
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+.delete-btn:hover {
+  background: #e25555;
+}
