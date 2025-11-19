@@ -1,0 +1,97 @@
+.editor-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+/*bara din editor*/
+.editor-top-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+/*butoane navigare*/
+.nav-btn {
+  padding: 8px 14px;
+  background: #ddd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.nav-btn:hover {
+  background: #ccc;
+}
+
+/*grupul cu butoane din dreapta*/
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/*stil general pentru btn*/
+.save-btn-small, .new-btn-small, .delete-btn-small {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/*btn SAVE*/
+.save-btn-small {
+  background: #4caf50;
+  color: white;
+}
+.save-btn-small:hover {
+  background: #449c47;
+}
+
+/*btn DELETE*/
+.delete-btn-small {
+  background: #ff6b6b;
+  color: white;
+}
+.delete-btn-small:hover {
+  background: #e25555;
+}
+
+/*titlul doc*/
+.title-input {
+  width: 100%;
+  font-size: 26px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/*bara cu bold, italic,...*/
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/*butoane toolbar*/
+.toolbar button {
+  padding: 8px 12px;
+  border: none;
+  background: #e9ebf0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.toolbar button:hover {
+  background: #d4d7dd;
+}
+
+/*zona de editare*/
+.editor-area {
+  width: 100%;
+  min-height: 450px;
+  padding: 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: white;
+  outline: none;
+}
