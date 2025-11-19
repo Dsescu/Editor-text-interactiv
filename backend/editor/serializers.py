@@ -28,7 +28,7 @@ class StyleSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ['user']
 
-class MediaFileSerializer(serializers.ModelSerializer):
+class MediaFileSerializer(serializers.ModelSerializer): #poze si link
     class Meta:
         model = MediaFile
         fields = "__all__"
