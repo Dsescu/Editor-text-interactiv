@@ -1,0 +1,60 @@
+.styles-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.back-btn {
+  background: #bbb;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #999;
+}
+
+.styles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.style-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 10px;
+  background: #fafafa;
+  text-align: center;
+}
+
+.style-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 350px;
+}
+
+.input-field,
+.select-field {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+}
+
+.save-style-btn {
+  background: #6a5acd;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: none;
+}
+
+.save-style-btn:hover {
+  background: #5a4acb;
+}

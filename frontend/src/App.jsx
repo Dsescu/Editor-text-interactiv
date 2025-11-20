@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import EditorPage from "./pages/EditorPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import StylesPage from "./pages/StylesPage";
 
 function App() {
   return (
@@ -32,6 +33,16 @@ function App() {
           element={
             <ProtectedRoute>
               <EditorPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/*styles*/}
+        <Route
+          path="/styles"
+          element={
+            <ProtectedRoute>
+              <StylesPage />
             </ProtectedRoute>
           }
         />

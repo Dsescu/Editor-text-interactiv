@@ -44,12 +44,21 @@ export default function Dashboard() {
     <div className="dash-container">
       <h1>Your Documents</h1>
 
-      {/* buton document nou */}
+      {/*buton doc nou*/}
       <button className="new-doc-btn" onClick={newDoc}>
         + New Document
       </button>
 
-      {/* lista cu doc */}
+      {/*buton manage styles*/}
+      <button
+        className="styles-btn"
+        onClick={() => nav("/styles")}
+        style={{ marginLeft: "10px" }}
+      >
+        Manage Styles
+      </button>
+
+      {/*lista cu doc*/}
       <div className="docs-grid">
         {docs.map((d) => (
           <div key={d.id} className="doc-card">
@@ -61,7 +70,7 @@ export default function Dashboard() {
               <p>Last edited: {new Date(d.updated_at).toLocaleString()}</p>
             </div>
 
-            {/* buton delete*/}
+            {/*buton delete*/}
             <button
               className="delete-btn"
               onClick={(e) => {
