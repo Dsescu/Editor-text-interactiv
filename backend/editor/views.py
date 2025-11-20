@@ -1,5 +1,6 @@
-from rest_framework import viewsets, generics, permissions
+from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -49,12 +50,26 @@ class MediaFileViewSet(viewsets.ModelViewSet):
     queryset = MediaFile.objects.all()
     serializer_class = MediaFileSerializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_queryset(self):
         return MediaFile.objects.filter(user=self.request.user)
     
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def create(self, request, *args, **kwargs):
+        file_obj = request.FILES.get('file')
+        if not file_obj:
+            return Response(
+                {"error" : "No file provided"},
+                status = status.HTTP_400_BAD_REQUEST
+            )
+        media_file = MediaFile.objects.create(
+            user = request.user, 
+            file = file_obj
+        )
+
+        serializer = self.get_serializer(media_file)
+        return Response(serializer.data, stattus = status.HTTP_201_CREATED)
+
 
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
