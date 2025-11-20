@@ -76,3 +76,20 @@
 .delete-btn:hover {
   background: #e25555;
 }
+
+/*buton stiluri*/
+.styles-btn {
+  padding: 12px 20px;
+  background: #6a5acd;
+  color: white;
+  font-weight: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.styles-btn:hover {
+  background: #5a4acb;
+}

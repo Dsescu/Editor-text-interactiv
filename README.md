@@ -20,4 +20,3 @@ Aplicatie pentru crearea si editarea colaborativa a documentelor text.
 ## Tehnologii
 - **Frontend:** React  
 - **Backend:** Django (Python)  
-- **Baza de date:** PostgreSQL
