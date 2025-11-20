@@ -1,6 +1,13 @@
+import os
+from django.conf import settings
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -60,15 +67,15 @@ class MediaFileViewSet(viewsets.ModelViewSet):
         if not file_obj:
             return Response(
                 {"error" : "No file provided"},
-                status = status.HTTP_400_BAD_REQUEST
+                status = 400
             )
         media_file = MediaFile.objects.create(
             user = request.user, 
             file = file_obj
         )
 
-        serializer = self.get_serializer(media_file)
-        return Response(serializer.data, stattus = status.HTTP_201_CREATED)
+        serializer = self.get_serializer(media_file, context={'request' : request})
+        return Response(serializer.data, status = status.HTTP_201_CREATED)
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
@@ -81,6 +88,23 @@ class DocumentViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+#upload image
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def upload_image(request):
+    file_obj = request.FILES.get("image")
+    if not file_obj:
+        return Response({"error": "No image uploaded"}, status = 400)
+    upload_dir = os.path.join("uploads", "images")
+    os.makedirs(os.path.join(settings.MEDIA_ROOT, upload_dir), exist_ok = True)
+
+    file_path = os.path.join(upload_dir, file_obj.name)
+    saved_path = default_storage.save(file_path, ContentFile(file_obj.read()))
+    file_url = request.build_absolute_uri(settings.MEDIA_URL + saved_path)
+    return Response({"url" :  file_url}, status = 200)
+
 
 
         

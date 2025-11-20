@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import {
   fetchDocuments,
@@ -7,6 +7,7 @@ import {
   deleteDocument,
   createDocument,
   fetchStyles,
+  uploadMedia
 } from "../api/api";
 
 import "../styles/editorPage.css";
@@ -19,7 +20,7 @@ export default function EditorPage() {
 
   const [stylesList, setStylesList] = useState([]); //lista stiluri din backend
   const [selectedStyleId, setSelectedStyleId] = useState(""); //stilul selectat
-
+  const editorRef = useRef(null);
   //incarca doc selectat
   useEffect(() => {
     async function load() {
@@ -70,6 +71,57 @@ export default function EditorPage() {
       node.style.fontFamily = style.font_family;
     }
   }
+
+  const insertLink = () => {
+    const url = prompt("Enter URL:");
+    if(url) applyFormat("createLink", url);
+  };
+
+  const insertImage = async () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
+      try{
+        const media = await uploadMedia(file);
+        document.execCommand("insertImage", false, media.file)
+      } catch(err){
+        console.error(err);
+        alert("Image upload failed!");
+      }
+    };
+    input.click();
+  };
+
+  const insertTable = () => {
+    const rows = parseInt(prompt("Number of rows:", 2));
+    const cols = parseInt(prompt("Number of columns:", 2));
+    if(isNaN(rows) || isNaN(cols)) return;
+
+    const table = document.createElement("table");
+    table.style.borderCollapse = "collapse";
+    table.style.margin = "10px 0";
+
+    for(let r = 0; r < rows; r++){
+      const tr = document.createElement("tr");
+      for(let c = 0; c < cols; c++){
+        const td = document.createElement("td");
+        td.innerHTML = "&nbsp;";
+        td.style.border = "1px solid #000";
+        td.style.padding = "8px 8px";
+        tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
+
+    const editor = editorRef.current;
+    const sel = window.getSelection();
+    const range = sel.getRangeAt(0);
+    range.insertNode(table);
+    range.setStartAfter(table);
+  };
 
   //salvare modificari
   async function save() {
@@ -127,6 +179,9 @@ export default function EditorPage() {
         <button onClick={() => applyFormat("underline")}>U</button>
         <button onClick={() => document.execCommand("undo")}>↩</button>
         <button onClick={() => document.execCommand("redo")}>↪</button>
+        <button onClick={insertLink}>Link</button>
+        <button onClick={insertImage}>Image</button>
+        <button onClick={insertTable}>Table</button>
 
         {/*Dropdown stiluri*/}
         <select
@@ -144,11 +199,43 @@ export default function EditorPage() {
 
         {/*Aplică stilul*/}
         <button onClick={applySelectedStyle}>Apply Style</button>
+
+        <select
+          onChange={(e) => applyFormat("fontName", e.target.value)}
+          defaultValue=""
+        > 
+          <option value="">Font</option>
+          <option value="Arial">Arial</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Verdana">Verdana</option>
+          <option value="Georgia">Georgia</option>
+        </select>
+
+        <select
+          onChange={(e) => applyFormat("fontSize", e.target.value)}
+          defaultValue=""
+        >
+          <option value="">Size</option>  
+          <option value="1">8px</option>  
+          <option value="2">12px</option>  
+          <option value="3">14px</option>  
+          <option value="4">18px</option>  
+          <option value="5">24px</option>  
+          <option value="6">32px</option>  
+          <option value="7">64px</option>  
+        </select>  
+
+        <input
+          type="color"
+          onChange={(e) => applyFormat("foreColor", e.target.value)}
+        />
+        
       </div>
 
       {/*ZONA EDITARE*/}
       <div
         id="editor-area"
+        ref={editorRef}
         className="editor-area"
         contentEditable
         dangerouslySetInnerHTML={{ __html: doc.content }}

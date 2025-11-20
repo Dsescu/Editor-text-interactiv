@@ -1,27 +1,29 @@
 import axios from "axios";
 
-//axios cu adresa de baza a API-ului
+// Instanța principală Axios
 const API = axios.create({
   baseURL: "http://127.0.0.1:8000/api/",
 });
 
-//pune token-ul automat la fiecare request
+// Atașează token-ul JWT la fiecare request
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("access");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
+// ===========================
+// AUTH
+// ===========================
 
-//AUTH
-//login
+// Login - (JWT: /api/auth/token/)
 export const login = (username, password) =>
   axios.post("http://127.0.0.1:8000/api/auth/token/", {
     username,
     password,
   });
 
-//register
+// Register
 export const register = (username, email, password) =>
   axios.post("http://127.0.0.1:8000/api/auth/register/", {
     username,
@@ -29,31 +31,44 @@ export const register = (username, email, password) =>
     password,
   });
 
+// ===========================
+// DOCUMENTS
+// ===========================
 
-//DOC
 export const fetchDocuments = () => API.get("documents/");
-
-//creeaza document
-export const createDocument = (d) => API.post("documents/", d);
-
-//modifica document
-export const updateDocument = (id, d) => API.put(`documents/${id}/`, d);
-
-//sterge document
+export const createDocument = (data) => API.post("documents/", data);
+export const updateDocument = (id, data) =>
+  API.put(`documents/${id}/`, data);
 export const deleteDocument = (id) => API.delete(`documents/${id}/`);
 
+// ===========================
+// STYLES
+// ===========================
 
-//STYLES
 export const fetchStyles = () => API.get("styles/");
+export const createStyle = (style) => API.post("styles/", style);
 
-//creeaza stil
-export const createStyle = (s) => API.post("styles/", s);
+// ===========================
+// MEDIA (Imagini / Fișiere)
+// ===========================
 
-
-//MEDIA
-// upload fisier
-export const uploadMedia = (file) => {
+// Upload pentru MediaFileViewSet (media-files/)
+export const uploadMedia = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
-  return API.post("media-files/", formData);
+
+  try{
+    const res = await API.post("media-files/", formData);
+    return res.data;
+  } catch(err){
+    console.error("Image upload failed:", err.response?.data || err);
+    throw err;
+  }
+  //return API.post("media-files/", formData, {
+   // headers: {
+    //  "Content-Type": "multipart/form-data",
+    //},
+ // });
 };
+
+export default API;

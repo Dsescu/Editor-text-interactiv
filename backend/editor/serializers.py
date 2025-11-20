@@ -28,11 +28,18 @@ class StyleSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ['user']
 
-class MediaFileSerializer(serializers.ModelSerializer): #poze si link
+class MediaFileSerializer(serializers.ModelSerializer): 
+    file = serializers.SerializerMethodField()
+
     class Meta:
         model = MediaFile
-        fields = "__all__"
-        read_only_fields = ['user', 'uploaded_at']
+        fields = ["id", "file"]
+
+    def get_file(self,obj):
+        request = self.context.get("request")
+        if request:
+            return request.build_absolute_uri(obj.file.url)
+        return obj.file.url
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:

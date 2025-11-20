@@ -7,6 +7,7 @@ from .views import (
     StyleViewSet,
     MediaFileViewSet,
     DocumentViewSet,
+    upload_image,
 )
 
 router = DefaultRouter()
@@ -19,5 +20,7 @@ urlpatterns = [
     path('auth/register/', RegisterView.as_view(), name='register'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     path('', include(router.urls)),
+    path("uploads/image/", upload_image, name="upload-image"),
 ]
+
 
