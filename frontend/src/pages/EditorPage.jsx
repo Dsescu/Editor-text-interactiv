@@ -41,12 +41,12 @@ export default function EditorPage() {
   }, []);
 
   //aplicare formatare text
-  function applyFormat(cmd) {
-    document.execCommand(cmd, false, null);
-  }
+  const applyFormat = (cmd, value = null) => {
+    document.execCommand(cmd, false, value);
+  };
 
   //aplica stilul selectat pe text
-  function applySelectedStyle() {
+  const applySelectedStyle = () => {
     if (!selectedStyleId) {
       alert("Select a style first!");
       return;
@@ -57,12 +57,12 @@ export default function EditorPage() {
 
     document.execCommand("styleWithCSS", false, true);
 
-    if (style.bold) document.execCommand("bold");
-    if (style.italic) document.execCommand("italic");
-    if (style.underline) document.execCommand("underline");
+    if (style.bold) applyFormat("bold");
+    if (style.italic) applyFormat("italic");
+    if (style.underline) applyFormat("underline");
 
-    document.execCommand("foreColor", false, style.text_color);
-    document.execCommand("fontSize", false, "7"); 
+    applyFormat("foreColor", style.text_color);
+    //document.execCommand("fontSize", false, "7"); 
 
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
@@ -70,11 +70,11 @@ export default function EditorPage() {
       node.style.fontSize = style.font_size + "px";
       node.style.fontFamily = style.font_family;
     }
-  }
+  };
 
-  const insertLink = () => {
+  const insertLink = () => { //!!!
     const url = prompt("Enter URL:");
-    if(url) applyFormat("createLink", url);
+    if (url) applyFormat("createLink", url);
   };
 
   const insertImage = async () => {
@@ -172,7 +172,7 @@ export default function EditorPage() {
         onChange={(e) => setDoc({ ...doc, title: e.target.value })}
       />
 
-      {/*TOOLBAR*/}
+       {/*TOOLBAR*/}
       <div className="toolbar">
         <button onClick={() => applyFormat("bold")}>B</button>
         <button onClick={() => applyFormat("italic")}>I</button>
@@ -211,6 +211,8 @@ export default function EditorPage() {
           <option value="Georgia">Georgia</option>
         </select>
 
+
+       
         <select
           onChange={(e) => applyFormat("fontSize", e.target.value)}
           defaultValue=""
@@ -223,13 +225,13 @@ export default function EditorPage() {
           <option value="5">24px</option>  
           <option value="6">32px</option>  
           <option value="7">64px</option>  
-        </select>  
+        </select> 
 
+        
         <input
           type="color"
           onChange={(e) => applyFormat("foreColor", e.target.value)}
         />
-        
       </div>
 
       {/*ZONA EDITARE*/}
