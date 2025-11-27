@@ -40,23 +40,46 @@ export default function Dashboard() {
     load();//da din nou load dupa stergere
   }
 
+  function handleLogout(){
+    if(!confirm("Are you sure you want to logout?")) return;
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    nav("/");
+  }
+
   return (
     <div className="dash-container">
       <h1>Your Documents</h1>
 
-      {/*buton doc nou*/}
-      <button className="new-doc-btn" onClick={newDoc}>
-        + New Document
-      </button>
+    <div className="top-buttons-container">
+        <button 
+          className="logout-btn" 
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
 
-      {/*buton manage styles*/}
-      <button
-        className="styles-btn"
-        onClick={() => nav("/styles")}
-        style={{ marginLeft: "10px" }}
-      >
-        Manage Styles
-      </button>
+    </div>
+
+    <div className="right-buttons">
+        {/*buton doc nou*/}
+        <button className="new-doc-btn" onClick={newDoc}>
+          + New Document
+        </button>
+
+      
+
+        {/*buton manage styles*/}
+        <button
+          className="styles-btn"
+          onClick={() => nav("/styles")}
+          style={{ marginLeft: "10px" }}
+        >
+          Manage Styles
+        </button>
+    </div>
+
+      
 
       {/*lista cu doc*/}
       <div className="docs-grid">
