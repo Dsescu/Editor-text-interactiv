@@ -8,6 +8,8 @@ from .views import (
     MediaFileViewSet,
     DocumentViewSet,
     upload_image,
+    shared_document,
+    update_shared_document,
 )
 
 router = DefaultRouter()
@@ -19,8 +21,14 @@ router.register(r'documents', DocumentViewSet)
 urlpatterns = [
     path('auth/register/', RegisterView.as_view(), name='register'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
-    path('', include(router.urls)),
+    
     path("uploads/image/", upload_image, name="upload-image"),
+
+    #documente partajate
+    path('shared/<uuid:token>/', shared_document, name='share_document'),
+    path('shared/<uuid:token>/update/', update_shared_document, name = 'update_shared_document'),
+
+    path('', include(router.urls)),
 ]
 
 
