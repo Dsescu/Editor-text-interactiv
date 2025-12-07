@@ -106,5 +106,44 @@ def upload_image(request):
     return Response({"url" :  file_url}, status = 200)
 
 
+@api_view(["GET"])
+@permission_classes([permissions.AllowAny])
+def shared_document(request, token):
+    try:
+        document = Document.objects.get(share_token=token)
+    except Document.DoesNotExist:
+        return Response({"error": "Invalid share link"}, status=404)
 
-        
+    data = {
+        "title": document.title,
+        "content": document.content,
+        "owner": document.user.username,
+    }
+
+    return Response(data, status=200)
+
+
+@api_view(["POST"])
+@permission_classes([permissions.IsAuthenticated])
+def update_shared_document(request, token):
+    try:
+        document = Document.objects.get(share_token=token)
+    except Document.DoesNotExist:
+        return Response({"error": "Invalid share link"}, status=404)
+
+    if (
+        request.user != document.user and
+        not document.collaborators.filter(user=request.user, can_edit=True).exists()
+    ):
+        return Response({"error": "No permission to edit"}, status=403)
+
+    content = request.data.get("content")
+    if content is None:
+        return Response({"error": "Missing content"}, status=400)
+
+    document.content = content
+    document.save()
+
+    return Response({"message": "Document updated"}, status=200)
+
+

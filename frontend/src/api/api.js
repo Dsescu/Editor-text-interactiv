@@ -25,7 +25,7 @@ export const login = (username, password) =>
 
 // Register
 export const register = (username, email, password) =>
-  axios.post("http://127.0.0.1:8000/api/auth/register/", {
+  axios.post("http://127.0.0.1:8000/api/register/", {
     username,
     email,
     password,

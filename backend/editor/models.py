@@ -57,7 +57,8 @@ class Document(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     #pentru partajare
-    share_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    share_token = models.CharField(max_length=64, null=True, blank=True)  # scoate unique=True !!!
+
     is_public = models.BooleanField(default=False)
 
     def __str__(self):

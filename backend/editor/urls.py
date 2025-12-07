@@ -19,7 +19,7 @@ router.register(r'media-files', MediaFileViewSet)
 router.register(r'documents', DocumentViewSet)
 
 urlpatterns = [
-    path('auth/register/', RegisterView.as_view(), name='register'),
+    path('register/', RegisterView.as_view(), name='register'),
     path('auth/logout/', LogoutView.as_view(), name='logout'),
     
     path("uploads/image/", upload_image, name="upload-image"),
