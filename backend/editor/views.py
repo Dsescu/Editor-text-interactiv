@@ -238,11 +238,15 @@ def update_shared_document(request, token):
     except Document.DoesNotExist:
         return Response({"error": "Invalid share link"}, status=404)
     
-    can_edit = (
-        request.user == document.user or
-        document.collaborators.filter(user=request.user, can_edit=True).exists()
-    )
+    can_edit = False
 
+    if request.user.is_authenticated and document.user == request.user:
+        can_edit = True
+    elif document.is_public:
+        can_edit = True
+    elif request.user.is_authenticated and document.collaborators.filter(user = request.user, can_edit = True).exists():
+        can_edit = True
+    
     if not can_edit:
         return Response({"error": "You do not have permission to edit this document"}, status=403)
     
@@ -251,6 +255,7 @@ def update_shared_document(request, token):
         return Response({"error": "No content provided"}, status=400)
         
     document.content = content
+    document.updated_at = timezone.now()
     document.save()
 
     return Response({"message": "Document updated"}, status=200)

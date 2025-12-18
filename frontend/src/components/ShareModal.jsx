@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addDocumentCollaborator, removeDocumentCollaborator } from "../api/api";
+import { addDocumentCollaborator, removeDocumentCollaborator, updateDocument } from "../api/api";
 import "../styles/shareModal.css";
 
 const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onCollaboratorAdded }) => {
@@ -8,8 +8,8 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
   const [message, setMessage] = useState("");
   const [newCollabEmail, setNewCollabEmail] = useState("");
   const [isAdding, setIsAdding] = useState(false);
+  const [isPublic,  setIsPublic] = useState(false);
 
-  
   if (!document) return null;
 
   const shareToken = document.share_token || "";
@@ -18,6 +18,17 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
   const handleShareAction = () => {
     onShare(shareType, { email_to: email, message });
   };
+
+  const togglePublicAccess = async (e) => {
+    const newValue = e.target.checked;
+    setIsPublic(newValue);
+    try {
+        await updateDocument(docId, {is_public: newValue});
+    } catch (err){
+        alert("Failed to update public access settings.");
+        setIsPublic(!newValue); //revenire in caz de eroare
+    }
+  }
 
   const handleAddCollaborator = async () => {
       if(!newCollabEmail) return;
@@ -49,79 +60,60 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
     <div className="modal-overlay">
       <div className="share-modal">
         
-        {/* Header Modal */}
         <div className="modal-header">
             <h2>Share "{document.title || "Document"}"</h2>
             <button className="close-btn" onClick={onClose}>×</button>
         </div>
 
-        {/* Tab-urile */}
         <div className="share-options">
             <div className="option-tabs">
-                <button 
-                    className={`tab-btn ${shareType === 'link' ? 'active' : ''}`} 
-                    onClick={() => setShareType('link')}
-                >
-                    🔗 Link
-                </button>
-                <button 
-                    className={`tab-btn ${shareType === 'email' ? 'active' : ''}`} 
-                    onClick={() => setShareType('email')}
-                >
-                    ✉️ Email
-                </button>
-                <button 
-                    className={`tab-btn ${shareType === 'pdf' ? 'active' : ''}`} 
-                    onClick={() => setShareType('pdf')}
-                >
-                    📄 PDF
-                </button>
+                <button className={`tab-btn ${shareType === 'link' ? 'active' : ''}`} onClick={() => setShareType('link')}>🔗 Link</button>
+                <button className={`tab-btn ${shareType === 'email' ? 'active' : ''}`} onClick={() => setShareType('email')}>✉️ Email</button>
+                <button className={`tab-btn ${shareType === 'pdf' ? 'active' : ''}`} onClick={() => setShareType('pdf')}>📄 PDF</button>
             </div>
 
-            {/* Conținut Tabs */}
             <div className="option-content">
-                
-                {/* 1. TAB LINK */}
                 {shareType === 'link' && (
                     <div className="link-option">
                         <p>Public link:</p>
-                        <div className="link-display">
-                            {shareLink}
+                        <div className="link-display">{shareLink}</div>
+                        
+                        <div style={{display:'flex', gap:'10px', marginTop:'10px'}}>
+                            <button className="copy-btn" onClick={() => {
+                                navigator.clipboard.writeText(shareLink);
+                                alert("Link copied!");
+                            }}>Copy Link</button>
                         </div>
-                        <button className="copy-btn" onClick={() => {
-                            navigator.clipboard.writeText(shareLink);
-                            alert("Link copied!");
-                        }}>Copy Link</button>
+
+                        {/* AICI ESTE NOUL CHECKBOX */}
+                        <div style={{marginTop: '20px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', border:'1px solid #eee'}}>
+                            <label style={{display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 'bold'}}>
+                                <input 
+                                    type="checkbox" 
+                                    checked={isPublic} 
+                                    onChange={togglePublicAccess}
+                                    style={{width:'18px', height:'18px'}}
+                                />
+                                Allow anyone with the link to edit
+                            </label>
+                            <p style={{fontSize:'12px', color:'#666', margin:'5px 0 0 28px'}}>
+                                If checked, anyone who has this link can modify the document without logging in.
+                            </p>
+                        </div>
                     </div>
                 )}
 
-                {/* 2. TAB EMAIL */}
                 {shareType === 'email' && (
                   <div className="email-option">
-                    <p>Send invitation:</p>
-                    <input 
-                      type="email" 
-                      placeholder="Recipient Email" 
-                      className="email-input"
-                      value={email} 
-                      onChange={e => setEmail(e.target.value)}
-                    />
-                    <textarea 
-                       placeholder="Optional message..." 
-                       className="message-input"
-                       value={message} 
-                       onChange={e => setMessage(e.target.value)}
-                    />
+                    <input type="email" placeholder="Recipient Email" className="email-input" value={email} onChange={e => setEmail(e.target.value)}/>
+                    <textarea placeholder="Optional message..." className="message-input" value={message} onChange={e => setMessage(e.target.value)}/>
                   </div>
                 )}
 
-                {/* 3. TAB PDF */}
                 {shareType === 'pdf' && (
                     <div className="pdf-option">
                         <p>Download as PDF.</p>
-                        <p className="note" style={{fontSize: '12px', color: '#666'}}>
-                            * Save changes before downloading.
-                        </p>
+                        <p className="note">* Save changes before downloading.</p>
                     </div>
                 )}
             </div>
@@ -129,40 +121,21 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
 
         <hr style={{border: '0', borderTop: '1px solid #eee', margin: '0 20px'}}/>
 
-        {/* Secțiunea Colaboratori */}
         <div className="collaborators-section">
             <h3>Active Collaborators</h3>
             <div className="collaborators-list">
-                {(!collaborators || collaborators.length === 0) && (
-                    <p style={{color:'#999', fontStyle:'italic'}}>No collaborators yet.</p>
-                )}
-                
+                {(!collaborators || collaborators.length === 0) && <p style={{color:'#999'}}>No collaborators yet.</p>}
                 {collaborators && collaborators.map(c => (
                     <div key={c.id || Math.random()} className="collaborator-item">
-                        <div style={{display:'flex', flexDirection:'column'}}>
-                             <span className="collaborator-name">{c.email || c.username || "User"}</span>
-                        </div>
-                        <button 
-                            onClick={() => handleRemoveCollaborator(c.user)} 
-                            style={{color:'#ff4444', border:'none', background:'none', cursor:'pointer', fontSize:'18px'}}
-                        >
-                            ×
-                        </button>
+                        <span>{c.email || c.username}</span>
+                        <button onClick={() => handleRemoveCollaborator(c.user)} style={{color:'red', border:'none', background:'none'}}>×</button>
                     </div>
                 ))}
             </div>
             
             <div className="add-collaborator">
-                <input 
-                    type="email" 
-                    placeholder="User Email to add" 
-                    className="collaborator-input"
-                    value={newCollabEmail}
-                    onChange={(e) => setNewCollabEmail(e.target.value)}
-                />
-                <button className="add-btn" onClick={handleAddCollaborator} disabled={isAdding}>
-                    {isAdding ? "..." : "Add"}
-                </button>
+                <input type="email" placeholder="Add specific user email..." className="collaborator-input" value={newCollabEmail} onChange={(e) => setNewCollabEmail(e.target.value)}/>
+                <button className="add-btn" onClick={handleAddCollaborator} disabled={isAdding}>{isAdding ? "..." : "Add"}</button>
             </div>
         </div>
 
