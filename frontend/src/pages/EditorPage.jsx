@@ -142,8 +142,9 @@ export default function EditorPage() {
   };
 
   const insertTable = () => {
-    const rows = 3; 
-    const cols = 3;
+    const rows = parseInt(prompt("Number of rows:", 3)) || 3;
+    const cols = parseInt(prompt("Number of columns:", 3)) || 3;
+
     let tableHtml = `<table style="border-collapse: collapse; width: 100%; border: 1px solid black;"><tbody>`;
     
     for(let r=0; r<rows; r++){
@@ -219,7 +220,8 @@ export default function EditorPage() {
 
     } catch (err) {
       console.error("Sharing error:", err);
-      alert("Sharing failed! Check if email settings are correct in backend.");
+      const errorMessage = err.response?.data?.error || "An error occurred while processing your request.";
+      alert(`Error: ${errorMessage}`);
     }
   };
 

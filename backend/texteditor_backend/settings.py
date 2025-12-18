@@ -156,7 +156,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 #adaugati aici datele voastre de autentificare
 EMAIL_HOST_USER = 'dianasescu78@gmail.com'
-EMAIL_HOST_PASSWORD = 'parola123'
+EMAIL_HOST_PASSWORD = 'gmqo fmzy wmtv rjyo'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
