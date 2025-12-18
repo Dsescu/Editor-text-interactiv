@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='document',
             name='share_token',
-            field=models.UUIDField(default=uuid.uuid4, editcable=False, unique=True),
+            field=models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
         ),
         migrations.CreateModel(
             name='ActiveEditor',

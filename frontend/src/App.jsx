@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import EditorPage from "./pages/EditorPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StylesPage from "./pages/StylesPage";
+import SharedDocPage from "./pages/SharedDocPage";
 
 function App() {
   return (
@@ -17,6 +18,9 @@ function App() {
         {/*register*/}
         <Route path="/register" element={<Register />} />
 
+        {/*Ruta publica pentru documente partajate*/}
+        <Route path="shared/:token" element={<SharedDocPage />} />
+        
         {/*dashboard*/}
         <Route
           path="/dashboard"

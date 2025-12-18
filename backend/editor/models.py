@@ -55,9 +55,11 @@ class Document(models.Model):
     content = models.TextField(blank = True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    auto_save_enabled = models.BooleanField(default=True)
+    last_auto_save = models.DateTimeField(null=True, blank=True)
 
     #pentru partajare
-    share_token = models.CharField(max_length=64, null=True, blank=True)  # scoate unique=True !!!
+    share_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     is_public = models.BooleanField(default=False)
 

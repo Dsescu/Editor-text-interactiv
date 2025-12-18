@@ -154,3 +154,173 @@
   justify-content: center;
   z-index: 999;
 }
+
+.editor-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.editor-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.save-status {
+  font-size: 12px;
+  color: #666;
+  margin-right: 10px;
+}
+
+.share-btn {
+  background: #6a5acd;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.share-btn:hover {
+  background: #5a4acb;
+}
+
+.nav-btn {
+  padding: 8px 14px;
+  background: #ddd;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  background: #ccc;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.save-btn-small, .new-btn-small, .delete-btn-small {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.save-btn-small {
+  background: #4caf50;
+  color: white;
+}
+
+.save-btn-small:hover:not(:disabled) {
+  background: #449c47;
+}
+
+.save-btn-small:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.delete-btn-small {
+  background: #ff6b6b;
+  color: white;
+}
+
+.delete-btn-small:hover {
+  background: #e25555;
+}
+
+.title-input {
+  width: 100%;
+  font-size: 26px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  background: #f1f3f6;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  align-items: center;
+}
+
+.toolbar button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: white;
+  font-size: 14px;
+  transition: 0.2s;
+  min-width: 36px;
+}
+
+.toolbar button:hover {
+  background: #e0e0e0;
+}
+
+.toolbar select,
+.toolbar input[type="color"],
+.toolbar input[type="number"] {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  background: white;
+  font-size: 14px;
+  height: 36px;
+}
+
+.style-dropdown {
+  min-width: 120px;
+}
+
+.editor-area {
+  width: 100%;
+  min-height: 500px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: white;
+  outline: none;
+  overflow: auto;
+  line-height: 1.6;
+}
+
+.editor-area img {
+  max-width: 100%;
+  height: auto;
+  cursor: move;
+}
+
+.editor-area table {
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.editor-area td, .editor-area th {
+  border: 1px solid #ccc;
+  padding: 8px;
+  min-width: 50px;
+}
+
+.editor-area a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.editor-area a:hover {
+  text-decoration: none;
+}

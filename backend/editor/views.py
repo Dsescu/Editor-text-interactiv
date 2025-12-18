@@ -2,16 +2,18 @@ import os
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.utils import timezone
+from django.db.models import Q
 
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import UserColor, Style, MediaFile, Document
+from .models import UserColor, Style, MediaFile, Document, DocumentCollaborator
 from .serializers import (
     UserSerializer,
     RegisterSerializer,
@@ -19,6 +21,13 @@ from .serializers import (
     StyleSerializer,
     MediaFileSerializer,
     DocumentSerializer,
+    DocumentCollaboratorSerializer,
+)
+
+from .strategy_pattern import (
+    LinkSharingStrategy,
+    EmailSharingStrategy,
+    PDFSharingStrategy
 )
 
 class RegisterView(generics.CreateAPIView):
@@ -84,10 +93,80 @@ class DocumentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Document.objects.filter(user=self.request.user)
+        #returneaza documentele utilizatorului si cele partajate cu el
+        user = self.request.user
+        return Document.objects.filter(
+            Q(user=user) |
+            Q(collaborators__user=user)
+        ).distinct()
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    @action(detail=True, methods=['post']) #!!!!!!!!!!!!!!!!!!!!!!
+    def share(self, request, pk=None): #partajarea doc folosind strategy pattern
+        document = self.get_object()
+        share_type = request.data.get('type', 'link')
+
+        #instantiem contextul 
+        context = SharingContext()
+
+        if share_type == 'email' :
+            context.set_strategy(EmailSharingStrategy())
+        elif share_type == 'pdf':
+            context.set_strategy(PDFSharingStrategy())
+        else:
+            context.set_strategy(LinkSharingStrategy())
+
+        try:
+            result = context.share_document(document, request, **request.data)
+            if share_type == 'pdf':
+                return result
+            return Response(result, status=200)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+        
+    @action(detail=True, methods=['get', 'post' , 'delete'])
+    def collaborators(self, request, pk=None): #gestionarea colaboratorilor pentru document
+        document = self.get_object()
+
+        if request.method == 'GET':
+            collaborators = document.collaborators.all()
+            serializer = DocumentCollaboratorSerializer(collaborators, many=True)
+            return Response(serializer.data, status=200)
+
+        elif request.method == 'POST':
+            email = request.data.get('email')
+            can_edit = request.data.get('can_edit', True)
+
+            if not user_id and email:
+                return Response({'error': 'Email is required'}, status=400)
+            
+            try:
+                user_to_add = User.objects.get(email=email)
+                if user_to_add == request.user:
+                    return Response({'error': 'Cannot add yourself as a collaborator'}, status=400)
+                
+                collaborator, created = DocumentCollaborator.objects.get_or_create(
+                    document=document,
+                    user=user,
+                    defaults={'can_edit': can_edit}
+                )
+                if not created:
+                    collaborator.can_edit = can_edit
+                    collaborator.save()
+
+                serializer = DocumentCollaboratorSerializer(collaborator)
+                return Response(serializer.data, status=201 if created else 200)
+            except User.DoesNotExist:
+                return Response({'error': 'User with this email does not exist'}, status=404)
+
+        elif request.method == 'DELETE':
+            user_id = request.data.get('user_id')
+            if user_id:
+                document.collaborators.filter(user_id=user_id).delete()
+                return Response({'message': 'Collaborator removed'}, status=200)
+            return Response({'error': 'User ID not provided'}, status=400)
 
 
 #upload image
@@ -118,6 +197,7 @@ def shared_document(request, token):
         "title": document.title,
         "content": document.content,
         "owner": document.user.username,
+        "is_public": document.is_public,
     }
 
     return Response(data, status=200)
@@ -130,17 +210,19 @@ def update_shared_document(request, token):
         document = Document.objects.get(share_token=token)
     except Document.DoesNotExist:
         return Response({"error": "Invalid share link"}, status=404)
+    
+    can_edit = (
+        request.user == document.user or
+        document.is_public or
+        document.collaborators.filter(user=request.user, can_edit=True).exists()
+    )
 
-    if (
-        request.user != document.user and
-        not document.collaborators.filter(user=request.user, can_edit=True).exists()
-    ):
-        return Response({"error": "No permission to edit"}, status=403)
-
+    if not can_edit:
+        return Response({"error": "You do not have permission to edit this document"}, status=403)
+    
     content = request.data.get("content")
     if content is None:
-        return Response({"error": "Missing content"}, status=400)
-
+        return Response({"error": "No content provided"}, status=400)
     document.content = content
     document.save()
 

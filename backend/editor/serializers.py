@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import UserColor, Style, MediaFile, Document
+from .models import UserColor, Style, MediaFile, Document, DocumentCollaborator
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,6 +15,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
+        UserColor.assign_color(user)
         return user
     
 class UserColorSerializer(serializers.ModelSerializer):
@@ -42,8 +43,25 @@ class MediaFileSerializer(serializers.ModelSerializer):
         return obj.file.url
 
 class DocumentSerializer(serializers.ModelSerializer):
+    collaborators = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=DocumentCollaborator.objects.all(),
+        required=False
+    )
+
     class Meta:
         model = Document
-        fields = "__all__"
-        read_only_fields = ['user', 'created_at', 'updated_at']
+        fields = [
+            'id', 'title', 'content','user', 'created_at', 'updated_at', 'share_token',
+            'is_public', 'auto_save_enabled', 'last_auto_save' ,'collaborators'
+        ]
+        read_only_fields = ['user', 'created_at', 'updated_at', 'share_token', 'last_auto_save']
+
+class DocumentCollaboratorSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+    email = serializers.ReadOnlyField(source='user.email')
+
+    class Meta:
+        model = DocumentCollaborator
+        fields = ['id', 'document', 'user', 'username', 'email', 'can_edit', 'added_at']
 
