@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { fetchSharedDocument, updateShareDocument } from "../api/api";
 import "../styles/editorPage.css";
 
+
 export default function sharedDocPage() {
     const { token } = useParams();
     const [doc, setDoc] = useState(null);

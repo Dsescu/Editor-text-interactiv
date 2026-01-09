@@ -1,129 +1,201 @@
-.dash-container {
-  max-width: 900px; 
-  margin: 40px auto;
-  padding: 20px;
-  text-align: center;
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
+
+/* Fundal */
+body {
+  background-color: #eff6ff;
+  color: #334155;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.dash-container {
+  max-width: 1000px; 
+  margin: 40px auto;
+  padding: 50px;
+  
+  background-color: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.05);
+  border: 1px solid #eef2ff;
+  
+  min-height: 80vh; 
+}
+
+/* Titlu */
+h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
 
 .top-buttons-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 20px;
+  
+  /* Spatiu intre titlu si zona de butoane */
+  margin-bottom: 30px; 
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f1f5f9; 
 }
 
-.logout-btn {
-  padding: 12px 20px;
-  background: #ff6b6b;
-  color: white;
-  font-weight: none;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  font-size: 16px;
-  transition: 0.2s;
-  order: 1;
-}
-.logout-btn:hover{
-  background: #e25555;
-}
-
+/* Grupul de elemente din dreapta sus */
 .right-buttons {
   display: flex;
-  gap: 10px;
-  order: 2;
+  gap: 15px;
 }
 
-/*butonul pentru document nou*/
+/* Butoane */
+
+/* 1. Buton Document Nou */
 .new-doc-btn {
-  padding: 12px 20px;
-  background: #4a90e2;
+  padding: 12px 24px;
+  background-color: #5c7cfa; 
   color: white;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  font-size: 16px;
-}
-.new-doc-btn:hover {
-  background: #3a7bc1;
-}
-
-/*grid cu documente*/
-.docs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px; /*spatiu intre ele*/
-}
-
-/*card pentru fiecare document*/
-.doc-card {
-  position: relative;
-  padding: 20px;
   border-radius: 12px;
-  background: #f6f7fb;
   cursor: pointer;
-  transition: 0.2s;
-  text-align: left;
-}
-.doc-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-/*titlu document*/
-.doc-info h3 {
-  margin: 0;
-  font-size: 18px;
-}
-
-/*descriere document*/
-.doc-info p {
-  color: #666;
-  font-size: 14px;
-  margin-top: 8px;
-}
-
-
-
-/*buton delete în colt*/
-.delete-btn {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  background: #ff6b6b;
-  color: white;
-  border: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  transition: 0.2s;
-}
-.delete-btn:hover {
-  background: #e25555;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(92, 124, 250, 0.2);
+  margin-right: 15px;
 }
 
-/*buton stiluri*/
+.new-doc-btn:hover {
+  background-color: #4b66d6;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(92, 124, 250, 0.3);
+}
+
+/* 2. Buton Stiluri */
 .styles-btn {
-  padding: 12px 20px;
-  background: #6a5acd;
-  color: white;
-  font-weight: none;
-  border: none;
-  border-radius: 8px;
+  padding: 12px 24px;
+  background-color: white;
+  color: #5c7cfa;
+  border: 2px solid #eef2ff;
+  border-radius: 12px;
   cursor: pointer;
-  margin-bottom: 20px;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
 }
 
 .styles-btn:hover {
-  background: #5a4acb;
+  border-color: #5c7cfa;
+  background-color: #f8fafc;
+  color: #4b66d6;
+}
+
+/* 3. Buton Logout */
+.logout-btn {
+  padding: 10px 18px;
+  background-color: #fff1f2; 
+  color: #e11d48;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #ffe4e6;
+  transform: translateY(-1px);
+}
+
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 30px; 
+  margin-top: 60px; 
+}
+
+/*  Document */
+.doc-card {
+  position: relative;
+  background: #f8fafc; 
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.doc-card:hover {
+  background: #ffffff;
+  border-color: #5c7cfa;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(92, 124, 250, 0.1);
+}
+
+.doc-card::before {
+  content: "📄";
+  font-size: 32px;
+  opacity: 0.8;
+  margin-bottom: 5px;
+}
+
+.doc-info h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #334155;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-info p {
+  color: #94a3b8;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* Delete */
+.delete-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #ef4444;
+  border: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0; 
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.doc-card:hover .delete-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.delete-btn:hover {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
 }

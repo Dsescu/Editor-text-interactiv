@@ -10,7 +10,9 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
   const [isAdding, setIsAdding] = useState(false);
   const [isPublic,  setIsPublic] = useState(false);
 
-  if (!document) return null;
+  if (!document) {
+    return null;
+  }
 
   const shareToken = document.share_token || "";
   const shareLink = shareToken ? `${window.location.origin}/shared/${shareToken}` : "Link generating...";
@@ -60,10 +62,12 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
     <div className="modal-overlay">
       <div className="share-modal">
         
+
         <div className="modal-header">
             <h2>Share "{document.title || "Document"}"</h2>
             <button className="close-btn" onClick={onClose}>×</button>
         </div>
+
 
         <div className="share-options">
             <div className="option-tabs">
@@ -71,6 +75,7 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
                 <button className={`tab-btn ${shareType === 'email' ? 'active' : ''}`} onClick={() => setShareType('email')}>✉️ Email</button>
                 <button className={`tab-btn ${shareType === 'pdf' ? 'active' : ''}`} onClick={() => setShareType('pdf')}>📄 PDF</button>
             </div>
+
 
             <div className="option-content">
                 {shareType === 'link' && (
@@ -85,7 +90,7 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
                             }}>Copy Link</button>
                         </div>
 
-                        {/* AICI ESTE NOUL CHECKBOX */}
+
                         <div style={{marginTop: '20px', padding: '10px', background: '#f9f9f9', borderRadius: '5px', border:'1px solid #eee'}}>
                             <label style={{display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 'bold'}}>
                                 <input 
@@ -103,12 +108,14 @@ const ShareModal = ({ document, onClose, onShare, collaborators = [], docId, onC
                     </div>
                 )}
 
+
                 {shareType === 'email' && (
                   <div className="email-option">
                     <input type="email" placeholder="Recipient Email" className="email-input" value={email} onChange={e => setEmail(e.target.value)}/>
                     <textarea placeholder="Optional message..." className="message-input" value={message} onChange={e => setMessage(e.target.value)}/>
                   </div>
                 )}
+
 
                 {shareType === 'pdf' && (
                     <div className="pdf-option">

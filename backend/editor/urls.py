@@ -24,7 +24,7 @@ urlpatterns = [
     
     path("uploads/image/", upload_image, name="upload-image"),
 
-    #documente partajate
+    # documente partajate
     path('shared/<uuid:token>/', shared_document, name='share_document'),
     path('shared/<uuid:token>/update/', update_shared_document, name = 'update_shared_document'),
 

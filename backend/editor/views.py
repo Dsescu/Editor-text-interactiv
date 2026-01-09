@@ -33,6 +33,8 @@ from .strategy_pattern import (
     PDFSharingStrategy
 )
 
+from .observer_pattern import EmailNotify, ConsoleNotifier
+
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -103,31 +105,71 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         document = self.get_object()
-        user = se;f.request.user
+        user = self.request.user
 
-        #proprietarul are voie sa faca orice
+        document.attach_observer(ConsoleNotifier())
+        document.attach_observer(EmailNotify()) 
+        
+        # verifica permisiunile
         if document.user == user:
             serializer.save()
+            document.save_with_notification(
+                user=user,
+                change_type="manual_save",
+                change_details="Document manually saved"
+            )
             return
 
-        #verificam daca e colaborator si are dreptul de editare
-        is_editor = document.collaborators.filter(user = user, can_edit = True).exists()
+        # verifica daca are drept de editare
+        is_editor = document.collaborators.filter(user=user, can_edit=True).exists()
         if is_editor:
             serializer.save()
-        else:
-            raise PermissionDenied("You have view-only access to this document")
+            document.save_with_notification(
+                user=user,
+                change_type="manual_save",
+                change_details=f"Document saved by collaborator {user.username}"
+            )
+            return
 
-    @action(detail=True, methods=['post'])
-    def auto_save(self, request, pk=None):
+        raise PermissionDenied("You have view-only access to this document")
+
+    @action(detail=True, methods=["post"])
+    def autosave(self, request, pk=None):
         document = self.get_object()
-        content = request.data.get("content", "")
+        user = request.user
+
+        document.attach_observer(ConsoleNotifier())
         
-        if content is not None:
+        content = request.data.get("content", "")
+        old_content = document.content
+        char_count = len(content)
+        
+        if document.user == user:
             document.content = content
             document.last_auto_save = timezone.now()
-            document.save()
-            return Response({'message': 'Document auto-saved', 'timestamp': document.last_auto_save}, status=200)
-        return Response({'error': 'No content provided'}, status=400)
+            
+            document.save_with_notification(
+                user=user,
+                change_type="autosave",
+                change_details=f"Auto-saved {char_count} characters"
+            )
+            return Response({"status": "autosaved"})
+
+        is_editor = document.collaborators.filter(user=user, can_edit=True).exists()
+        if is_editor:
+            document.content = content
+            document.last_auto_save = timezone.now()
+            document.save_with_notification(
+                user=user,
+                change_type="autosave",
+                change_details=f"Auto-saved by collaborator: {char_count} characters"
+            )
+            return Response({"status": "autosaved"})
+
+        return Response(
+            {"detail": "Not allowed"},
+            status=status.HTTP_403_FORBIDDEN
+        )
     
     @action(detail=True, methods=['post']) 
     def share(self, request, pk=None):

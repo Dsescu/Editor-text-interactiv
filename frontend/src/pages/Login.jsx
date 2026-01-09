@@ -6,21 +6,21 @@ import { useNavigate } from "react-router-dom";
 export default function Login() {
   const nav = useNavigate();
 
-  //valori username si parola
+  // valori username si parola
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  //login
+  // login
   async function handleLogin(e) {
     e.preventDefault();
     try {
-      const res = await login(username, password); //trimit la backend
+      const res = await login(username, password); // trimit la backend
 
-      //salvare token-uri
+      // salvare token-uri
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
 
-      nav("/dashboard");//daca e ok trecem la dashboard
+      nav("/dashboard"); // daca e ok trecem la dashboard
     } catch {
       alert("Login failed. Check your username or password.");
     }
@@ -31,7 +31,7 @@ export default function Login() {
       <div className="auth-card">
 
         <h2 className="auth-title">Welcome Back</h2>
-        <p className="auth-subtitle">Sign in to continue</p>
+        <p className="auth-subtitle">Log in to continue</p>
 
         {/*login*/}
         <form onSubmit={handleLogin}>

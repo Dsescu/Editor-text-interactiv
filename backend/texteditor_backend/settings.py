@@ -12,25 +12,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+from datetime import timedelta
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-e4=xe_(oh$0e0e#yhjeq&jf-4v0(e)_xypgry@0ar%t-1v3ozl'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
-
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,9 +36,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'editor',
     'corsheaders',
+    'channels',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -53,7 +48,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'texteditor_backend.urls'
@@ -74,6 +68,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'texteditor_backend.wsgi.application'
+ASGI_APPLICATION = 'texteditor_backend.asgi.application'
 
 
 # Database
@@ -85,6 +80,14 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 
 
 # Password validation
@@ -148,15 +151,24 @@ ALLOWED_UPLOAD_EXTENSIONS = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
-#configurare email pentru partajare prin email
+#configurare email pentru partajare
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-#adaugati aici datele voastre de autentificare
-EMAIL_HOST_USER = 'dianasescu78@gmail.com'
-EMAIL_HOST_PASSWORD = 'gmqo fmzy wmtv rjyo'
+
+EMAIL_HOST_USER = 'stanutdenisa099@gmail.com'
+EMAIL_HOST_PASSWORD = 'zbdl zmxg qnuj hlya'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1), 
+    
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}

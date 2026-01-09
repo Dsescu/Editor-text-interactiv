@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function Register() {
   const nav = useNavigate();
 
-  //date
+  // date
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -17,13 +17,13 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  //functie register
+  // functie register
   async function handleRegister(e) {
     e.preventDefault();
     try {
-      await register(form.username, form.email, form.password); //trimit date
+      await register(form.username, form.email, form.password); // trimit date
       alert("Account created!");
-      nav("/");//mergem la login
+      nav("/"); // mergem la login
     } catch {
       alert("Registration failed");
     }
@@ -34,7 +34,7 @@ export default function Register() {
       <div className="auth-card">
 
         <h2 className="auth-title">Create Account</h2>
-        <p className="auth-subtitle">Join our workspace</p>
+        <p className="auth-subtitle">Sign in to continue</p>
 
         <form onSubmit={handleRegister}>
           <input

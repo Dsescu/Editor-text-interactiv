@@ -14,30 +14,30 @@ import "../styles/dashboard.css";
 
 export default function Dashboard() {
   const nav = useNavigate();
-  const [docs, setDocs] = useState([]); //lista de documente
+  const [docs, setDocs] = useState([]); // lista de documente
 
-  //incarcam doc din backend
+  // incarcam doc din backend
   async function load() {
     const res = await fetchDocuments();
     setDocs(res.data);
   }
 
-  //lload o singura data la deschidere pagina
+  // load o singura data la deschidere pagina
   useEffect(() => {
     load();
   }, []);
 
-  //creeaza doc nou si merge in editor direct pentru editarea lui
+  // creeaza doc nou si merge in editor direct pentru editarea lui
   async function newDoc() {
     const res = await createDocument({ title: "New Document", content: "" });
     nav(`/editor/${res.data.id}`);
   }
 
-  //sterge document
+  // sterge document
   async function handleDelete(id) {
     if (!confirm("Are you sure you want to delete this document?")) return;
     await deleteDocument(id);
-    load();//da din nou load dupa stergere
+    load(); // da din nou load dupa stergere
   }
 
   function handleLogout(){
@@ -79,7 +79,6 @@ export default function Dashboard() {
         </button>
     </div>
 
-      
 
       {/*lista cu doc*/}
       <div className="docs-grid">
