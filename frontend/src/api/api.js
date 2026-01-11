@@ -1,6 +1,6 @@
 import axios from "axios";
 
-//detectam IP-u; de pe care s-a incarcat pagina
+//detectam IP-ul de pe care s-a incarcat pagina
 const hostname = window.location.hostname; 
 const API_URL = `http://${hostname}:8000/api/`;
 
@@ -33,14 +33,13 @@ API.interceptors.response.use(
 // AUTH
 // Login 
 export const login = (username, password) =>
-  axios.post("http://127.0.0.1:8000/api/auth/token/", {
+  API.post("auth/token/", {  
     username,
     password,
   });
 
-// Register
 export const register = (username, email, password) =>
-  axios.post("http://127.0.0.1:8000/api/register/", {
+  API.post("register/", {   
     username,
     email,
     password,
@@ -64,14 +63,11 @@ export const shareDocument = (id, type, data = {}) =>{
 export const getDocumentCollaborators = (id) => API.get(`documents/${id}/collaborators/`);
 export const addDocumentCollaborator = (id, email, canEdit = true) => API.post(`documents/${id}/collaborators/`, { email: email, can_edit: canEdit });
 export const removeDocumentCollaborator = (id, userId) => API.delete(`documents/${id}/collaborators/` , { data: { user_id: userId } });
-export const fetchSharedDocument = (token) => axios.get(`http://127.0.0.1:8000/api/shared/${token}/`);
+export const fetchSharedDocument = (token) => API.get(`shared/${token}/`); 
 
 export const updateShareDocument = (token, content) => {
-  const localToken = localStorage.getItem("access");
-  const headers = localToken ? { Authorization: `Bearer ${localToken}` } : {};
-  return axios.post(`http://127.0.0.1:8000/api/shared/${token}/update/`, { content }, { headers });
+  return API.post(`shared/${token}/update/`, { content }); 
 }
-
 
 // STYLES
 export const fetchStyles = () => API.get("styles/");
