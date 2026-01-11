@@ -1,8 +1,11 @@
 import axios from "axios";
 
+//detectam IP-u; de pe care s-a incarcat pagina
+const hostname = window.location.hostname; 
+const API_URL = `http://${hostname}:8000/api/`;
 
 const API = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/",
+  baseURL: API_URL,
 });
 
 

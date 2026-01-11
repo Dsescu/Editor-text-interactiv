@@ -20,7 +20,7 @@ SECRET_KEY = 'django-insecure-e4=xe_(oh$0e0e#yhjeq&jf-4v0(e)_xypgry@0ar%t-1v3ozl
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*'] #permite acesul de pe orice adresa de IP
 
 INSTALLED_APPS = [
     'daphne',

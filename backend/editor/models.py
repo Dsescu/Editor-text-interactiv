@@ -96,7 +96,8 @@ class Document(DocumentObservable, models.Model):
         return f"{self.title} ({self.user.username})"
     
     def get_share_link(self, request):
-        return f"{request.scheme}://{request.get_host()}/shared/{self.share_token}"
+        host = request.get_host().split(':')[0]
+        return f"http://{host}:5173/shared/{self.share_token}"
     
     def save_with_notification(self, user, change_type="content_updated", change_details="", *args, **kwargs):
         # salveaza documentul normal

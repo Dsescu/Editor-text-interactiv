@@ -77,7 +77,8 @@ export default function EditorPage() {
   // initializare WebSocket
   useEffect(() => {
     const token = localStorage.getItem("access"); 
-    const wsUrl = `ws://127.0.0.1:8000/ws/documents/${id}/?token=${token}`;
+    const hostname = window.location.hostname;
+    const wsUrl = `ws://${hostname}:8000/ws/documents/${id}/?token=${token}`;
     
     socketRef.current = new WebSocket(wsUrl);
 
