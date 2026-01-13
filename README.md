@@ -1,202 +1,103 @@
-# \# Proiect Colaborativ în Timp Real (Django + React)
-
-# 
-
 # Acest proiect este configurat pentru a permite colaborarea în timp real între utilizatori de pe dispozitive diferite, conectate la aceeași rețea Wi-Fi/LAN.
 
-# 
 
-# \## Cerințe Preliminare (Prerequisites)
 
-# 
+# Cerințe Preliminare (Prerequisites)
 
-# \* \*\*Python 3.10+\*\*
+- Python 3.10+
 
-# \* \*\*Node.js 16+\*\* și \*\*npm\*\*
+- Node.js 16+ și npm
 
-# \* \*\*Virtualenv\*\* (recomandat)
+- Virtualenv (recomandat)
 
-# \* \*\*Două sau mai multe dispozitive\*\* conectate la aceeași rețea Wi-Fi.
+- Două sau mai multe dispozitive conectate la aceeași rețea Wi-Fi.                  
 
-# 
+# Pasul 1: Configurare Backend (Django)
 
-# ---
+1. Deschideți terminalul în folderul backend.
 
-# 
+2. Creați și activați mediul virtual (dacă nu există deja):
+```bash
+    # Windows
+    python -m venv venv
+    venv\Scripts\activate
 
-# \##  Pasul 1: Configurare Backend (Django)
+    # Linux/Mac
+    source venv/bin/activate
+```
+3. Instalați dependențele:
+```bash
+  pip install django daphne channels channels_redis djangorestframework django-cors-headers djangorestframework-simplejwt xhtml2pdf
+```
+4. Efectuați migrările bazei de date:
 
-# 
+```bash
+    python manage.py makemigrations
+    python manage.py migrate
+```
 
-# 1\.  Deschideți terminalul în folderul `backend`.
+5. Pornire Server (Mod Rețea):
 
-# 2\.  \*\*Creați și activați mediul virtual\*\* (dacă nu există deja):
+Pentru a fi vizibil de pe alte laptopuri, serverul trebuie să asculte pe toate interfețele (0.0.0.0), nu doar pe localhost.
 
-# 
+```bash
+    python manage.py runserver 0.0.0.0:8000
+```
 
-# &nbsp;   ```bash
+# Pasul 2: Configurare Frontend (React)
 
-# &nbsp;   # Windows
+1. Deschideți un nou terminal în folderul frontend.
 
-# &nbsp;   python -m venv venv
+2. Instalați pachetele npm:
 
-# &nbsp;   venv\\Scripts\\activate
+```bash
+    npm install
+```
 
-# 
+3. Pornire Aplicație (Mod Rețea):
 
-# &nbsp;   # Linux/Mac
+Trebuie rulat cu parametrul --host pentru a expune aplicația în rețea.
 
-# &nbsp;   source venv/bin/activate
+```bash
+  npm run dev -- --host
+```
 
-# &nbsp;   ```
+ <mark> Terminalul va afișa adresa de rețea, de exemplu: Network: http://192.168.1.104:5173/
 
-# 
+# Pasul 3: Cum accesează utilizatorii aplicația
 
-# 3\.  \*\*Instalați dependențele:\*\*
+1. Identifică IP-ul Serverului:
 
-# 
+Pe laptopul unde rulează codul (Server), deschide un terminal și scrie *ipconfig* (Windows) sau *ifconfig* (Mac/Linux). Caută IPv4 Address (ex: 192.168.1.104).
 
-# &nbsp;   ```bash
+2. Accesare:
 
-# &nbsp;   pip install django daphne channels channels\_redis djangorestframework django-cors-headers djangorestframework-simplejwt xhtml2pdf
+De pe Laptopul Server: Deschide browserul la http://192.168.1.104:5173 (Folosește IP-ul, NU localhost, pentru ca WebSocket-urile să fie compatibile).
 
-# &nbsp;   ```
+De pe Laptopul Client : Deschide browserul la aceeași adresă: http://192.168.1.104:5173.
 
-# 
+# Pasul 4: Depanare (Troubleshooting) - Dacă nu merge conexiunea
 
-# 5\.  \*\*Efectuați migrările bazei de date:\*\*
+Dacă Laptopul client primește eroarea "This site can't be reached" sau nu se poate loga:
 
-# 
+1. Windows Firewall :
 
-# &nbsp;   ```bash
+Pe Laptopul Server, Firewall-ul blochează implicit conexiunile externe pe porturile 8000 și 5173.
 
-# &nbsp;   python manage.py makemigrations
+Soluție: Dezactivează temporar Windows Defender Firewall pentru rețelele "Private" și "Public" din Control Panel -> System and Security -> Windows Defender Firewall.
 
-# &nbsp;   python manage.py migrate
+2. Client Isolation:
 
-# &nbsp;   ```
+Dacă sunteți pe o rețea publică (cafenea, facultate), routerul poate bloca comunicarea între dispozitive.
 
-# 
+Soluție: Folosiți un Mobile Hotspot de pe telefon pentru ambele laptopuri.
 
-# 6\.  \*\*Pornire Server (Mod Rețea):\*\*
+3. Antivirus:
 
-# &nbsp;   Pentru a fi vizibil de pe alte laptopuri, serverul trebuie să asculte pe toate interfețele (`0.0.0.0`), nu doar pe localhost.
+Unele programe antivirus au propriul Firewall care poate bloca conexiunea.
 
-# 
+# Note funcționale
 
-# &nbsp;   ```bash
+**Email**: Pentru trimiterea email-urilor, configurați EMAIL_HOST_USER și EMAIL_HOST_PASSWORD (App Password) în settings.py.
 
-# &nbsp;   python manage.py runserver 0.0.0.0:8000
-
-# &nbsp;   ```
-
-# 
-
-# ---
-
-# 
-
-# \## Pasul 2: Configurare Frontend (React)
-
-# 
-
-# 1\.  Deschideți un nou terminal în folderul `frontend`.
-
-# 2\.  \*\*Instalați pachetele npm:\*\*
-
-# 
-
-# &nbsp;   ```bash
-
-# &nbsp;   npm install
-
-# &nbsp;   ```
-
-# 
-
-# 3.  \*\*Pornire Aplicație (Mod Rețea):\*\*
-
-# &nbsp;   Trebuie rulat cu parametrul `--host` pentru a expune aplicația în rețea.
-
-# 
-
-# &nbsp;   ```bash
-
-# &nbsp;   npm run dev -- --host
-
-# &nbsp;   ```
-
-# 
-
-# &nbsp;   > Terminalul va afișa adresa de rețea, de exemplu: `Network: http://192.168.1.104:5173/`
-
-# 
-
-# ---
-
-# 
-
-# \## Pasul 3: Cum accesează utilizatorii aplicația
-
-# 
-
-# \### 1. Identifică IP-ul Serverului
-
-# Pe laptopul unde rulează codul (Server), deschide un terminal și scrie `ipconfig` (Windows) sau `ifconfig` (Mac/Linux). Caută \*\*IPv4 Address\*\* (ex: `192.168.1.104`).
-
-# 
-
-# \### 2. Accesare
-
-# \* \*\*De pe Laptopul Server:\*\* Deschide browserul la `http://192.168.1.104:5173` (Folosește IP-ul, \*\*NU\*\* localhost, pentru ca WebSocket-urile să fie compatibile).
-
-# \* \*\*De pe Laptopul Client (B):\*\* Deschide browserul la aceeași adresă: `http://192.168.1.104:5173`.
-
-# 
-
-# ---
-
-# 
-
-# \## Depanare (Troubleshooting)
-
-# 
-
-# Dacă Laptopul B primește eroarea \*"This site can't be reached"\* sau nu se poate loga:
-
-# 
-
-# 1\.  \*\*Windows Firewall (Cauza #1):\*\*
-
-# &nbsp;   \* Pe Laptopul Server, Firewall-ul blochează implicit conexiunile externe pe porturile `8000` și `5173`.
-
-# &nbsp;   \* \*\*Soluție:\*\* Dezactivează temporar \*Windows Defender Firewall\* pentru rețelele "Private" și "Public" din \*Control Panel -> System and Security -> Windows Defender Firewall\*.
-
-# 
-
-# 2\.  \*\*Client Isolation:\*\*
-
-# &nbsp;   \* Dacă sunteți pe o rețea publică (cafenea, facultate), routerul poate bloca comunicarea între dispozitive.
-
-# &nbsp;   \* \*\*Soluție:\*\* Folosiți un \*Mobile Hotspot\* de pe telefon pentru ambele laptopuri.
-
-# 
-
-# 3\.  \*\*Antivirus:\*\*
-
-# &nbsp;   \* Unele programe antivirus au propriul Firewall care poate bloca conexiunea.
-
-# 
-
-# ---
-
-# 
-
-# \## Note funcționale
-
-# 
-
-# \* \*\*Email:\*\* Pentru trimiterea email-urilor, configurați `EMAIL\_HOST\_USER` și `EMAIL\_HOST\_PASSWORD` (App Password) în `settings.py`.
-
-# \* \*\*Link-uri Share:\*\* Link-urile generate vor folosi IP-ul serverului (ex: `http://192.168.1.104...`) pentru a fi accesibile de pe alte dispozitive.
-
+**Link-uri Share**: Link-urile generate vor folosi IP-ul serverului (ex: http://192.168.1.104...) pentru a fi accesibile de pe alte dispozitive. 
