@@ -251,7 +251,7 @@ export default function EditorPage() {
     for(let r=0; r<rows; r++){
         tableHtml += `<tr>`;
         for(let c=0; c<cols; c++){
-            tableHtml += `<td style="border: 1px solid black; padding: 5px;">Example</td>`;
+            tableHtml += `<td style="border: 1px solid black; padding: 5px;"></td>`;
         }
         tableHtml += `</tr>`;
     }
